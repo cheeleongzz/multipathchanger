@@ -132,7 +132,7 @@ switch ($selection)
              clear-host
          }
          'q' {
-            exit
+            break
          
          }
           Default {Write-Host "Invalid Choice. Try again." -ForegroundColor Red
