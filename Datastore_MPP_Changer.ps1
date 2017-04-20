@@ -25,7 +25,7 @@ height: 50px;
 
 # HTML Markup
 $PageBoxOpener=”<div id=’box1’>”
-$ReportHeader=”<div id=’boxheader’>Multipath Policy Report $clustername</div>”
+$ReportHeader=”<div id=’boxheader’>Multipath Policy Report</div>”
 #CanonicalName, Vendor, Model, CapacityGB, VMHost, MultipathPolicy
 $ReportTable=”<table><tr><th>Concanical Name</th><th>Vendor</th><th>Model</th><th>CapacityGB</th><th>VMHost</th><th>Multipath Policy</th></tr>”
 $BoxContentOpener=”<div id=’boxcontent’>”
@@ -60,14 +60,14 @@ function Show-Menu
 function checkpath
 {
 	#Check and display the multipath policy of all LUN and multipath policy
-    Get-Cluster $clustername | Get-VMHost | Get-ScsiLun -LunType disk | Select-Object CanonicalName, Vendor, Model, CapacityGB, VMHost, MultipathPolicy | FT
+    Get-VMHost | Get-ScsiLun -LunType disk | Select-Object CanonicalName, Vendor, Model, CapacityGB, VMHost, MultipathPolicy | FT
     "`n"
 }
 
 Write-Host "Enter the required information" -ForegroundColor Yellow
              $folder = Read-Host -Prompt "Enter the folder to export the HTML report:"
 			 $vcenter = Read-Host -Prompt "Please enter vcenter server FQDN or IP address"
-             $clustername = Read-Host -Prompt "Please enter the cluster name"
+             #$clustername = Read-Host -Prompt "Please enter the cluster name"
              Connect-VIServer $vcenter
 			 clear-host
              #Grab all information for html report
@@ -88,7 +88,7 @@ switch ($selection)
          } 
          '1' {
              Write-Host "Datastores which is not configured as Round Robin Multipath Policy" -ForegroundColor Yellow
-             $mpReport = Get-Cluster $clustername | Get-VMHost | Get-ScsiLun -LunType disk | where {$_.MultipathPolicy -ne "RoundRobin"} | Select-Object CanonicalName, Vendor, Model, CapacityGB, VMHost, MultipathPolicy | FT
+             $mpReport = Get-VMHost | Get-ScsiLun -LunType disk | where {$_.MultipathPolicy -ne "RoundRobin"} | Select-Object CanonicalName, Vendor, Model, CapacityGB, VMHost, MultipathPolicy | FT
              
 			 $mpReport
 			 
@@ -102,7 +102,7 @@ switch ($selection)
          } 
          '2' {
              Write-Host "Creating Simple HTML report to display Datastores which is not configured as Round Robin Multipath Policy" -ForegroundColor Yellow
-             $Report = Get-Cluster $clustername | Get-VMHost | Get-ScsiLun -LunType disk | where {$_.MultipathPolicy -ne "RoundRobin"} | 
+             $Report = Get-VMHost | Get-ScsiLun -LunType disk | where {$_.MultipathPolicy -ne "RoundRobin"} | 
              select CanonicalName, Vendor, Model, CapacityGB, VMHost, MultipathPolicy
 
              If (-not $Report){   
@@ -125,7 +125,7 @@ switch ($selection)
          }
          '3' {
              Write-Host "Changing the datastores listed in option 2 to Round Robin..." -ForegroundColor Green
-             Get-Cluster $clustername | Get-VMHost | Get-ScsiLun -LunType disk | where {$_.MultipathPolicy -ne "RoundRobin"} | Set-ScsiLun -MultipathPolicy "RoundRobin"
+             Get-VMHost | Get-ScsiLun -LunType disk | where {$_.MultipathPolicy -ne "RoundRobin"} | Set-ScsiLun -MultipathPolicy "RoundRobin"
              Write-Host "Operation Completed" -ForegroundColor Green
              Write-Host "Press any key to return to main menu." -ForegroundColor Yellow
              pause
